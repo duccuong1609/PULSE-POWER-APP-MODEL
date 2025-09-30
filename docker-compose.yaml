@@ -1,0 +1,9 @@
+version: "3.9"
+
+services:
+  pulse-model-app:
+    image: duccuong1609/pulse-model:latest
+    container_name: pulse-model-app
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
