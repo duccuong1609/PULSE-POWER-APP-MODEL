@@ -37,6 +37,6 @@ def load_model_and_mappings(
     model.load_state_dict(state_dict)
     model.eval()
 
-    print(f"Model and mappings loaded successfully on {device}.")
+    print(f"✅ NCF Model and mappings loaded successfully on {device}.")
 
     return model, user2idx, item2idx, idx2user, idx2item, device

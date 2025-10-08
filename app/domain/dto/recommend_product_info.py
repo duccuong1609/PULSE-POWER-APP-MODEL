@@ -6,6 +6,6 @@ class OrderInfo(BaseModel):
     score: float
     rank: int
 
-class RecommendInfo(BaseModel):
-    user_id: str
+class RecommendProductInfo(BaseModel):
+    product_id: str
     recommendations: List[OrderInfo]

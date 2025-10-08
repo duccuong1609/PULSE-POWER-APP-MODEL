@@ -38,9 +38,9 @@ class RecommendationCustomerService:
         results = []
         for rank, idx in enumerate(top_idx, start=1):
             results.append({
-                "MaHang": self.idx2item[idx],
-                "Score": float(top_scores_norm[rank-1]),
-                "Rank": rank
+                "product_id": self.idx2item[idx],
+                "score": float(top_scores_norm[rank-1]),
+                "rank": rank
             })
 
         return results
