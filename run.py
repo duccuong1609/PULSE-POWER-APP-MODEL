@@ -6,6 +6,7 @@ from app.domain.model.als import ALS_Predictor
 from app.domain.model.ease import EASE_Predictor
 from app.domain.model.hybrid import Hybrid_Predictor
 from app.domain.model.knn import ItemKNN_Predictor
+import __main__
 
 setattr(sys.modules['__main__'], 'EASE_Predictor', EASE_Predictor)
 setattr(sys.modules['__main__'], 'ALS_Predictor', ALS_Predictor)
