@@ -1,42 +1,39 @@
-import torch
-import joblib
-from app.domain.model.ncf_bpr import NCF_BPR
+import pickle
+import os
 
-def load_model_and_mappings(
-    mapping_path="app/assets/ncf_bpr_user_mappings.pkl",
-    model_path="app/assets/ncf_bpr_user_model.pth",
-    emb_size=128,
-    hidden=[256,128,64],
-    dropout=0.2
-):
-    # ==== device ====
-    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+class ModelLoader:
+    _models = {}
+    
+    @classmethod
+    def load_models(cls):
+        """Load toàn bộ model từ file .pkl vào RAM"""
+        print("⏳ Đang tải 6 mô hình vào bộ nhớ...")
+        base_path = "assets"
+        
+        models_config = {
+            "ease": "ease_full_model.pkl",
+            "als": "als_full_model.pkl",
+            "knn": "knn_full_model.pkl",
+            "slim": "slim_full_model.pkl",
+            "svd": "svd_full_model.pkl",
+            "hybrid": "hybrid_full_5E_3K_2S_model.pkl"
+        }
 
-    # ==== Load mappings ====
-    mappings = joblib.load(mapping_path)
-    user2idx = mappings["user2idx"]
-    item2idx = mappings["item2idx"]
-    idx2user = mappings["idx2user"]
-    idx2item = mappings["idx2item"]
+        for name, filename in models_config.items():
+            filepath = os.path.join(base_path, filename)
+            if os.path.exists(filepath):
+                try:
+                    with open(filepath, "rb") as f:
+                        cls._models[name] = pickle.load(f)
+                    print(f"✅ Đã load xong: {name.upper()}")
+                except Exception as e:
+                    print(f"❌ Lỗi khi load {name}: {e}")
+            else:
+                print(f"⚠️ Không tìm thấy file: {filepath}")
 
-    num_users = len(user2idx)
-    num_items = len(item2idx)
+    @classmethod
+    def get_model(cls, model_name: str):
+        """Lấy model theo tên"""
+        return cls._models.get(model_name.lower())
 
-    # ==== Khởi tạo model ====
-    model = NCF_BPR(
-        num_users=num_users,
-        num_items=num_items,
-        emb_size=emb_size,
-        hidden=hidden,
-        dropout=dropout,
-        device=device
-    )
-
-    # ==== Load weights ====
-    state_dict = torch.load(model_path, map_location=device)
-    model.load_state_dict(state_dict)
-    model.eval()
-
-    print(f"✅ NCF Model and mappings loaded successfully on {device}.")
-
-    return model, user2idx, item2idx, idx2user, idx2item, device
+model_loader = ModelLoader()
